@@ -1,29 +1,13 @@
 const express = require("express");
+const booksController = require("../controllers/booksController");
 function routes(Book) {
   //initilizng the Router instance
   const bookRouter = express.Router();
-
+  const controller = booksController(Book);
   bookRouter
     .route("/books") // Posting a new book into the Book Objectg
-    .post((req, res) => {
-      const book = new Book(req.body);
-      console.log(book);
-      book.save();
-      return res.status(201).json(book);
-    }) // Getting the Data from the Data base with an Example for filtering based on genre
-    .get((req, res) => {
-      const query = {};
-      if (req.query.genre) {
-        query.genre = req.query.genre;
-      }
-      Book.find(query, (err, books) => {
-        if (err) {
-          return res.send(err);
-        } else {
-          return res.json(books);
-        }
-      });
-    });
+    .post(controller.post) // Getting the Data from the Data base with an Example for filtering based on genre
+    .get(controller.get);
 
   /* A Middleware in the middle of the request to make some functions and even changes to the request it self before it gets to the server so we can do whatever and modifiy it as we want*/
 
