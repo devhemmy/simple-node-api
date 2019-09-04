@@ -26,7 +26,13 @@ function routes(Book) {
   bookRouter
     .route("/books/:bookId") //Getting a single Item of the Data Base
     .get((req, res) => {
-      res.json(req.book);
+      //Adding HATEOS for genre filtration
+      const returnBook = req.book.toJSON();
+
+      returnBook.links = {};
+      const genre = req.book.genre.replace(" ", "%20");
+      returnBook.links.FilterByThisGenre = `http://${req.headers.host}/api/books/?genre=${genre}`;
+      res.json(returnBook);
     }) // Updating a specific book as a whole
     .put((req, res) => {
       const { book } = req;
